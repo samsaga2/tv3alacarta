@@ -44,7 +44,10 @@ def get_letter(letter):
     for item in shows.find('resultats'):
         titol = item.find('titol').text
         code = item.find('idint_rss').text
-        img = item.find('imatges').findall('img')[0].text    
+        try:
+            img = item.find('imatges').findall('img')[0].text
+        except:
+            img = ''    
         list.append({'titol': titol, 'code': code, 'img': img})
     return list
 
