@@ -73,21 +73,17 @@ def show_letter(letter):
     
 def show_episodes(code):
     for item in tv3.get_episodes(code):
-        url = build_url({'mode': 'quality', 'code': item['code']})
+        url = build_url({'mode': 'play', 'code': item['code']})
         li = xbmcgui.ListItem(item['titol'], iconImage="DefaultVideo.png", thumbnailImage=item['img'])
         li.setInfo("Video", {"Title": item['titol'], "Plot": item['plot'], "Date": item['data']})
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
     xbmcplugin.endOfDirectory(addon_handle)
     
     
-def select_quality(code):
-    for item in tv3.get_show_info(code)['videos']:        
-        title = 'Qualitat {0}'.format(item['quality_label'])
-        url = tv3.get_show_rtmp(code, item['quality_code'], item['format'])
-        
-        li = xbmcgui.ListItem(title, iconImage="DefaultVideo.png")
-        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li) 
-    xbmcplugin.endOfDirectory(addon_handle)
+def play(code):
+    video = tv3.get_show_info(code)['videos'][0]
+    url = tv3.get_show_rtmp(code, video['quality_code'], video['format'])
+    xbmc.Player().play(url)
     
 
 if mode is None:
@@ -106,6 +102,6 @@ elif mode[0] == 'letter':
 elif mode[0] == 'episodes':
     code = args['code'][0]
     show_episodes(code)
-elif mode[0] == 'quality':
+elif mode[0] == 'play':
     code = args['code'][0]
-    select_quality(code)
+    play(code)
