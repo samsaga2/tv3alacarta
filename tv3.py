@@ -36,22 +36,21 @@ def fetch_xmlmedia(code, quality, format):
 
 
 def get_letter(letter):
-    list = []
-    shows = fetch_xmlletter(letter)
-    for item in shows.find('resultats'):
+    def build_item(item):
         titol = item.find('titol').text
         code = item.find('idint_rss').text
         try:
             img = item.find('imatges').findall('img')[0].text
         except:
-            img = ''    
-        list.append({'titol': titol, 'code': code, 'img': img})
+            img = ''
+        return {'titol': titol, 'code': code, 'img': img}
+    xmldoc = fetch_xmlletter(letter)
+    list = map(build_item, xmldoc.find('resultats'))
     return list
 
+
 def get_episodes(code):
-    list = []
-    xmldoc = fetch_xmlepisodes(code)
-    for item in xmldoc.find('resultats'):
+    def build_item(item):
         code = item.attrib['idint']
         titol = item.find('titol').text
         try:
@@ -67,15 +66,15 @@ def get_episodes(code):
         data = item.find('data').text 
         durada = item.find('durada_h').text
         plot = 'Data: {0}\nDurada: {1}\n{2}'.format(data, durada, entradeta)
-        
-        list.append({'code': code,
-                     'titol': titol,
-                     'img': img,
-                     'plot': plot,
-                     'data': data                    
-        })
+        return {'code': code,
+                'titol': titol,
+                'img': img,
+                'plot': plot,
+                'data': data                    
+                }
+    xmldoc = fetch_xmlepisodes(code)
+    list = map(build_item, xmldoc.find('resultats')) 
     return list
-
 
 def get_show_info(code):
     def extract_video_info(node):
