@@ -35,6 +35,25 @@ mode = args.get('mode', None)
 def build_url(query):
     return base_url + '?' + urllib.urlencode(query)
 
+def show_mainmenu():
+    url = build_url({'mode': 'programes'})
+    li = xbmcgui.ListItem('Programes', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'mesdestacats'})
+    li = xbmcgui.ListItem('Mes destacats', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'mesvistes'})
+    li = xbmcgui.ListItem('Mes vistes', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'mesvotades'})
+    li = xbmcgui.ListItem('Mes votades', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+     
+    xbmcplugin.endOfDirectory(addon_handle)
+
 
 def show_letters():
     for letter in tv3.letters:
@@ -72,6 +91,14 @@ def select_quality(code):
     
 
 if mode is None:
+    show_mainmenu()
+elif mode[0] == 'mesdestacades':
+    pass
+elif mode[0] == 'mesvistes':
+    pass
+elif mode[0] == 'mesvotades':
+    pass
+elif mode[0] == 'programes':
     show_letters()
 elif mode[0] == 'letter':
     letter = args['letter'][0]
