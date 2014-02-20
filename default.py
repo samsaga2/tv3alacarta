@@ -52,11 +52,15 @@ def build_shows_menu(shows):
     xbmcplugin.endOfDirectory(addon_handle)
     
     
-def build_episodes_menu(episodes):
+def build_episodes_menu(episodes, include_subtitle=False):
     for episode in episodes:
+        if include_subtitle and len(episode.subtitle) != 0:
+            title = '{0} - {1}'.format(episode.title, episode.subtitle)
+        else:
+            title = episode.title
         url = build_url({'mode': 'play', 'code': episode.code})
-        li = xbmcgui.ListItem(episode.title, iconImage="DefaultVideo.png", thumbnailImage=episode.img)
-        li.setInfo("Video", {"Title": episode.title, "Plot": episode.plot, "Date": episode.date})
+        li = xbmcgui.ListItem(title, iconImage="DefaultVideo.png", thumbnailImage=episode.img)
+        li.setInfo("Video", {"Title": title, "Plot": episode.plot, "Date": episode.date})
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
     xbmcplugin.endOfDirectory(addon_handle)
 
@@ -79,6 +83,11 @@ def show_mainmenu():
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
      
     xbmcplugin.endOfDirectory(addon_handle)
+    
+    
+def show_mesdestacats():
+    shows = tv3.get_mesdestacats()
+    build_episodes_menu(shows, True)
 
 
 def show_letters():
@@ -104,8 +113,8 @@ def play(code):
 
 if mode is None:
     show_mainmenu()
-elif mode[0] == 'mesdestacades':
-    pass
+elif mode[0] == 'mesdestacats':
+    show_mesdestacats()
 elif mode[0] == 'mesvistes':
     pass
 elif mode[0] == 'mesvotades':

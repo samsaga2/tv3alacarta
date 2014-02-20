@@ -14,8 +14,9 @@ class Show:
         
         
 class Episode:
-    def __init__(self, title, code, img, plot, date):
+    def __init__(self, title, subtitle, code, img, plot, date):
         self.title = title
+        self.subtitle = subtitle
         self.code = code
         self.img = img
         self.plot = plot
@@ -27,26 +28,22 @@ class Media:
         self.format = format
         self.quality_label = quality_label
         self.quality_code = quality_code
-         
-
-def get_letter(letter):
-    def build_item(item):
-        titol = item.find('titol').text
-        code = item.find('idint_rss').text
-        try:
-            img = item.find('imatges').findall('img')[0].text
-        except:
-            img = ''
-        return Show(titol, code, img)
-    xmldoc = tv3xml.fetch_xmlletter(letter)
-    list = map(build_item, xmldoc.find('resultats'))
-    return list
+        
+        
+def build_show_item(item):
+    title = item.find('titol').text.encode('ISO-8859-1')
+    code = item.find('idint_rss').text
+    try:
+        img = item.find('imatges').findall('img')[0].text
+    except:
+        img = ''
+    return Show(title, code, img)
 
 
-def get_episodes(code):
-    def build_item(item):
+def build_episode_item(item):
         code = item.attrib['idint']
-        titol = item.find('titol').text
+        title = item.find('titol').text.encode('ISO-8859-1')
+        subtitle = item.find('subtitol').text.encode('ISO-8859-1')
         try:
             img = item.find('imatges').findall('img')[0].text
         except:
@@ -60,21 +57,38 @@ def get_episodes(code):
         data = item.find('data').text 
         durada = item.find('durada_h').text
         plot = 'Data: {0}\nDurada: {1}\n{2}'.format(data, durada, entradeta)
-        return Episode(titol, code, img, plot, data)
-    xmldoc = tv3xml.fetch_xmlepisodes(code)
-    list = map(build_item, xmldoc.find('resultats')) 
-    return list
+        return Episode(title, subtitle, code, img, plot, data)
+    
 
-
-def get_media(code):
-    def extract_video_info(video):
+def build_media_item(video):
         format = video.find('format').text
         quality_label = video.find('qualitat').attrib['label']
         quality_code = video.find('qualitat').text
         return Media(format, quality_label, quality_code)
+    
+    
+def get_mesdestacats():
+    xmldoc = tv3xml.fetch_mesdestacats()
+    list = map(build_episode_item, xmldoc.find('resultats'))
+    return list
+         
+
+def get_letter(letter):
+    xmldoc = tv3xml.fetch_xmlletter(letter)
+    list = map(build_show_item, xmldoc.find('resultats'))
+    return list
+
+
+def get_episodes(code):
+    xmldoc = tv3xml.fetch_xmlepisodes(code)
+    list = map(build_episode_item, xmldoc.find('resultats')) 
+    return list
+
+
+def get_media(code):
     xmldoc = tv3xml.fetch_xmlinfo(code)
     title = xmldoc.find('title').text
-    videos = map(extract_video_info, xmldoc.find('videos').findall('video'))
+    videos = map(build_media_item, xmldoc.find('videos').findall('video'))
     return videos
 
 
