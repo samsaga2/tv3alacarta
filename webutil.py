@@ -12,13 +12,3 @@ def fetch_page(url):
     }
     request = urllib2.Request(url, headers=headers)
     return urllib2.urlopen(request).read()
-
-
-def format_rmtp_url(rtmpurl):
-    # from 'rtmp://mp4-500-strfs.fplive.net/mp4-500-str/mp4:g/tvcatalunya/0/0/1381401675900.mp4'
-    # to 'rtmp://mp4-500-strfs.fplive.net playpath=mp4:g/tvcatalunya/0/0/1381401675900.mp4 app=mp4-500-str'
-    matches = re.findall("rtmp\://(.*?)/(.*?)/(.*?)$", rtmpurl, flags=re.DOTALL)
-    rtmp_host = matches[0][0]
-    rtmp_app = matches[0][1]
-    rtmp_playpath = matches[0][2]
-    return 'rtmp://{0} playpath={1} app={2}'.format(rtmp_host, rtmp_playpath, rtmp_app)

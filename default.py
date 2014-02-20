@@ -3,7 +3,6 @@
 #    el QUALITY y el FORMAT salen del URL INFO
 
 
-
 REMOTE_DBG = False 
 if REMOTE_DBG:
     try:
@@ -20,7 +19,6 @@ import xbmcplugin
 import urlparse
 import urllib
 import tv3
-
 
 
 base_url = sys.argv[0]

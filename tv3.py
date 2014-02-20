@@ -104,10 +104,34 @@ def get_media(code):
     return videos
 
 
+page_url = 'http://zonatv.net/cadenas-autonomicas/tv-3-cat.php'
+swf_url = 'http://zonatv.net/cadenas-autonomicas/media/canales/tv-3-cat-2654656.swf'
+
+
+def format_rmtp_url(rtmpurl):
+    # from 'rtmp://mp4-500-strfs.fplive.net/mp4-500-str/mp4:g/tvcatalunya/0/0/1381401675900.mp4'
+    # to 'rtmp://mp4-500-strfs.fplive.net playpath=mp4:g/tvcatalunya/0/0/1381401675900.mp4 app=mp4-500-str'
+    matches = re.findall("rtmp\://(.*?)/(.*?)/(.*?)$", rtmpurl, flags=re.DOTALL)
+    rtmp_host = matches[0][0]
+    rtmp_app = matches[0][1]
+    rtmp_playpath = matches[0][2]
+    return 'rtmp://{0} playpath={1} app={2} swfUrl={3} live=1 pageUrl={4}'.format(rtmp_host, rtmp_playpath, rtmp_app, swf_url, page_url)
+
+
+def format_rmtpdirecte_url(rtmpurl):
+    # from 'rtmp://tv-nogeo-flashlivefs.fplive.net/tv-nogeo-flashlive-live/stream_TV3CAT_FLV'
+    # to 'rtmp://tv-nogeo-flashlivefs.fplive.net/tv-nogeo-flashlive-live playpath=stream_TV3CAT_FLV swfUrl=http://zonatv.net/cadenas-autonomicas/media/canales/tv-3-cat-2654656.swf live=1 pageUrl=http://zonatv.net/cadenas-autonomicas/tv-3-cat.php'
+    matches = re.findall("rtmp\://(.*?)/(.*?)/(.*?)$", rtmpurl, flags=re.DOTALL)
+    rtmp_host = matches[0][0]
+    rtmp_app = matches[0][1]
+    rtmp_playpath = matches[0][2]
+    return 'rtmp://{0}/{1} playpath={1} app={2} swfUrl={3} live=1 pageUrl={4}'.format(rtmp_host, rtmp_playpath, rtmp_app, swf_url, page_url)
+
+
 def get_show_rtmp(code, quality_code, format):
     xmldoc = tv3xml.fetch_xmlmedia(code, quality_code, format)
     media = xmldoc.find('item').find('media').text
-    return webutil.format_rmtp_url(media)
+    return format_rmtp_url(media)
 
 
 def get_canal_stream(canal):
@@ -121,5 +145,5 @@ def get_canal_stream(canal):
                     url = geo.attrib['url']
                     xmldoc = tv3xml.fetch_xml(url)
                     media = xmldoc.find('item').find('media').text
-                    return webutil.format_rmtp_url(media)
+                    return format_rmtpdirecte_url(media)
     return ''
