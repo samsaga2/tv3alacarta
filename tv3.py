@@ -22,6 +22,13 @@ class Episode:
         self.date = date
 
 
+class Media:
+    def __init__(self, format, quality_label, quality_code):
+        self.format = format
+        self.quality_label = quality_label
+        self.quality_code = quality_code
+         
+
 def get_letter(letter):
     def build_item(item):
         titol = item.find('titol').text
@@ -59,16 +66,16 @@ def get_episodes(code):
     return list
 
 
-def get_show_info(code):
+def get_media(code):
     def extract_video_info(video):
         format = video.find('format').text
         quality_label = video.find('qualitat').attrib['label']
         quality_code = video.find('qualitat').text
-        return {'format':format, 'quality_label':quality_label, 'quality_code':quality_code}    
+        return Media(format, quality_label, quality_code)
     xmldoc = tv3xml.fetch_xmlinfo(code)
     title = xmldoc.find('title').text
     videos = map(extract_video_info, xmldoc.find('videos').findall('video'))
-    return {'title':title, 'videos':videos}
+    return videos
 
 
 def get_show_rtmp(code, quality_code, format):

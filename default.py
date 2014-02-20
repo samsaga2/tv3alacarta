@@ -81,8 +81,9 @@ def show_episodes(code):
     
     
 def play(code):
-    video = tv3.get_show_info(code)['videos'][0]
-    url = tv3.get_show_rtmp(code, video['quality_code'], video['format'])
+    videos = tv3.get_media(code)
+    video = videos[0]
+    url = tv3.get_show_rtmp(code, video.quality_code, video.format)
     xbmc.Player().play(url)
     
 
