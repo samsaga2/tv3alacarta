@@ -35,6 +35,32 @@ mode = args.get('mode', None)
 def build_url(query):
     return base_url + '?' + urllib.urlencode(query)
 
+
+def build_letters_menu(letters):
+    for letter in letters:
+        url = build_url({'mode': 'letter', 'letter': letter})
+        li = xbmcgui.ListItem(letter, iconImage='DefaultFolder.png')
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
+    xbmcplugin.endOfDirectory(addon_handle)
+    
+
+def build_shows_menu(shows):
+    for show in shows:
+        url = build_url({'mode': 'episodes', 'code': show.code})
+        li = xbmcgui.ListItem(show.title, iconImage=show.img)
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
+    xbmcplugin.endOfDirectory(addon_handle)
+    
+    
+def build_episodes_menu(episodes):
+    for episode in episodes:
+        url = build_url({'mode': 'play', 'code': episode.code})
+        li = xbmcgui.ListItem(episode.title, iconImage="DefaultVideo.png", thumbnailImage=episode.img)
+        li.setInfo("Video", {"Title": episode.title, "Plot": episode.plot, "Date": episode.date})
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
+    xbmcplugin.endOfDirectory(addon_handle)
+
+
 def show_mainmenu():
     url = build_url({'mode': 'programes'})
     li = xbmcgui.ListItem('Programes', iconImage='DefaultFolder.png')
@@ -56,28 +82,17 @@ def show_mainmenu():
 
 
 def show_letters():
-    for letter in tv3.letters:
-        url = build_url({'mode': 'letter', 'letter': letter})
-        li = xbmcgui.ListItem(letter, iconImage='DefaultFolder.png')
-        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
-    xbmcplugin.endOfDirectory(addon_handle)
+    build_letters_menu(tv3.letters)
 
 
 def show_letter(letter):
-    for show in tv3.get_letter(letter):
-        url = build_url({'mode': 'episodes', 'code': show.code})
-        li = xbmcgui.ListItem(show.title, iconImage=show.img)
-        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
-    xbmcplugin.endOfDirectory(addon_handle)
+    shows = tv3.get_letter(letter)
+    build_shows_menu(shows)
     
     
 def show_episodes(code):
-    for episode in tv3.get_episodes(code):
-        url = build_url({'mode': 'play', 'code': episode.code})
-        li = xbmcgui.ListItem(episode.title, iconImage="DefaultVideo.png", thumbnailImage=episode.img)
-        li.setInfo("Video", {"Title": episode.title, "Plot": episode.plot, "Date": episode.date})
-        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
-    xbmcplugin.endOfDirectory(addon_handle)
+    episodes = tv3.get_episodes(code)
+    build_episodes_menu(episodes)
     
     
 def play(code):
