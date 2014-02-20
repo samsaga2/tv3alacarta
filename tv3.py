@@ -6,6 +6,13 @@ import tv3xml
 letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 
+class Show:
+    def __init__(self, title, code, img):
+        self.title = title
+        self.code = code
+        self.img = img
+
+
 def get_letter(letter):
     def build_item(item):
         titol = item.find('titol').text
@@ -14,7 +21,7 @@ def get_letter(letter):
             img = item.find('imatges').findall('img')[0].text
         except:
             img = ''
-        return {'titol': titol, 'code': code, 'img': img}
+        return Show(titol, code, img)
     xmldoc = tv3xml.fetch_xmlletter(letter)
     list = map(build_item, xmldoc.find('resultats'))
     return list

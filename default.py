@@ -64,9 +64,9 @@ def show_letters():
 
 
 def show_letter(letter):
-    for item in tv3.get_letter(letter):
-        url = build_url({'mode': 'episodes', 'code': item['code']})
-        li = xbmcgui.ListItem(item['titol'], iconImage=item['img'])
+    for show in tv3.get_letter(letter):
+        url = build_url({'mode': 'episodes', 'code': show.code})
+        li = xbmcgui.ListItem(show.title, iconImage=show.img)
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
     xbmcplugin.endOfDirectory(addon_handle)
     
