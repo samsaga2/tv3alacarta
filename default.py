@@ -70,6 +70,10 @@ def show_mainmenu():
     li = xbmcgui.ListItem('Programes', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
 
+    url = build_url({'mode': 'directe'})
+    li = xbmcgui.ListItem('Directe', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
     url = build_url({'mode': 'mesdestacats'})
     li = xbmcgui.ListItem('Mes destacats', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
@@ -83,6 +87,27 @@ def show_mainmenu():
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
      
     xbmcplugin.endOfDirectory(addon_handle)
+    
+    
+def show_directe():
+    url = build_url({'mode': 'arafem', 'canal': 'TV3CAT'})
+    li = xbmcgui.ListItem('TV3', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+    
+    url = build_url({'mode': 'arafem', 'canal': '33'})
+    li = xbmcgui.ListItem('C33', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'arafem', 'canal': '324'})
+    li = xbmcgui.ListItem('3/24', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'arafem', 'canal': 'cameres'})
+    li = xbmcgui.ListItem('Cameres TV3', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+     
+    xbmcplugin.endOfDirectory(addon_handle)
+    
     
     
 def show_mesdestacats():
@@ -117,12 +142,21 @@ def show_episodes(code):
 def play(code):
     videos = tv3.get_media(code)
     video = videos[0]
-    url = tv3.get_show_rtmp(code, video.quality_code, video.format)
-    xbmc.Player().play(url)
+    rtmp = tv3.get_show_rtmp(code, video.quality_code, video.format)
+    xbmc.Player().play(rtmp)
     
+
+def show_arafem(canal):
+    rtmp = tv3.get_canal_stream(canal)
+    xbmc.Player().play(rtmp)
 
 if mode is None:
     show_mainmenu()
+elif mode[0] == 'directe':
+    show_directe()
+elif mode[0] == 'arafem':
+    canal = args['canal'][0]
+    show_arafem(canal)
 elif mode[0] == 'mesdestacats':
     show_mesdestacats()
 elif mode[0] == 'mesvistes':

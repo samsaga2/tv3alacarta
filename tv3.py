@@ -108,3 +108,18 @@ def get_show_rtmp(code, quality_code, format):
     xmldoc = tv3xml.fetch_xmlmedia(code, quality_code, format)
     media = xmldoc.find('item').find('media').text
     return webutil.format_rmtp_url(media)
+
+
+def get_canal_stream(canal):
+    xmldoc = tv3xml.fetch_xml_canal(canal)
+    default_quality = xmldoc.find('qualitat_defecte').text
+    for stream in xmldoc.find('streams'):        
+        qualitat = stream.attrib['qualitat']
+        if qualitat == default_quality:
+            for geo in stream.findall('geo'):
+                if geo.attrib['ambit'] == 'TOTS':
+                    url = geo.attrib['url']
+                    xmldoc = tv3xml.fetch_xml(url)
+                    media = xmldoc.find('item').find('media').text
+                    return webutil.format_rmtp_url(media)
+    return ''
