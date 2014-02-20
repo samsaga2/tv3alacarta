@@ -17,6 +17,12 @@ def fetch_mesdestacats():
     # http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=destacats&id=&page=1&pageItems=10&device=web
     url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=destacats&page=1&pageItems=100&device=web'
     return fetch_xml(url)
+
+
+def fetch_mesvotats():
+    # http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=mesvotats&page=1&pageItems=10&device=web
+    url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=mesvotats&page=1&pageItems=100&device=web'
+    return fetch_xml(url)
     
 
 def fetch_xmlletter(letter):

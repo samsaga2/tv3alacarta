@@ -78,8 +78,8 @@ def show_mainmenu():
     li = xbmcgui.ListItem('Mes vistes', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
 
-    url = build_url({'mode': 'mesvotades'})
-    li = xbmcgui.ListItem('Mes votades', iconImage='DefaultFolder.png')
+    url = build_url({'mode': 'mesvotats'})
+    li = xbmcgui.ListItem('Mes votats', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
      
     xbmcplugin.endOfDirectory(addon_handle)
@@ -89,6 +89,11 @@ def show_mesdestacats():
     shows = tv3.get_mesdestacats()
     build_episodes_menu(shows, True)
 
+
+def show_mesvotats():
+    shows = tv3.get_mesvotats()
+    build_episodes_menu(shows, True)
+    
 
 def show_letters():
     build_letters_menu(tv3.letters)
@@ -117,8 +122,8 @@ elif mode[0] == 'mesdestacats':
     show_mesdestacats()
 elif mode[0] == 'mesvistes':
     pass
-elif mode[0] == 'mesvotades':
-    pass
+elif mode[0] == 'mesvotats':
+    show_mesvotats()
 elif mode[0] == 'programes':
     show_letters()
 elif mode[0] == 'letter':

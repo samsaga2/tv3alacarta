@@ -61,14 +61,20 @@ def build_episode_item(item):
     
 
 def build_media_item(video):
-        format = video.find('format').text
-        quality_label = video.find('qualitat').attrib['label']
-        quality_code = video.find('qualitat').text
-        return Media(format, quality_label, quality_code)
+    format = video.find('format').text
+    quality_label = video.find('qualitat').attrib['label']
+    quality_code = video.find('qualitat').text
+    return Media(format, quality_label, quality_code)
     
     
 def get_mesdestacats():
     xmldoc = tv3xml.fetch_mesdestacats()
+    list = map(build_episode_item, xmldoc.find('resultats'))
+    return list
+
+
+def get_mesvotats():
+    xmldoc = tv3xml.fetch_mesvotats()
     list = map(build_episode_item, xmldoc.find('resultats'))
     return list
          
