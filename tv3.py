@@ -11,6 +11,15 @@ class Show:
         self.title = title
         self.code = code
         self.img = img
+        
+        
+class Episode:
+    def __init__(self, title, code, img, plot, date):
+        self.title = title
+        self.code = code
+        self.img = img
+        self.plot = plot
+        self.date = date
 
 
 def get_letter(letter):
@@ -44,12 +53,7 @@ def get_episodes(code):
         data = item.find('data').text 
         durada = item.find('durada_h').text
         plot = 'Data: {0}\nDurada: {1}\n{2}'.format(data, durada, entradeta)
-        return {'code': code,
-                'titol': titol,
-                'img': img,
-                'plot': plot,
-                'data': data                    
-                }
+        return Episode(titol, code, img, plot, data)
     xmldoc = tv3xml.fetch_xmlepisodes(code)
     list = map(build_item, xmldoc.find('resultats')) 
     return list

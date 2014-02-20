@@ -72,10 +72,10 @@ def show_letter(letter):
     
     
 def show_episodes(code):
-    for item in tv3.get_episodes(code):
-        url = build_url({'mode': 'play', 'code': item['code']})
-        li = xbmcgui.ListItem(item['titol'], iconImage="DefaultVideo.png", thumbnailImage=item['img'])
-        li.setInfo("Video", {"Title": item['titol'], "Plot": item['plot'], "Date": item['data']})
+    for episode in tv3.get_episodes(code):
+        url = build_url({'mode': 'play', 'code': episode.code})
+        li = xbmcgui.ListItem(episode.title, iconImage="DefaultVideo.png", thumbnailImage=episode.img)
+        li.setInfo("Video", {"Title": episode.title, "Plot": episode.plot, "Date": episode.date})
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
     xbmcplugin.endOfDirectory(addon_handle)
     
