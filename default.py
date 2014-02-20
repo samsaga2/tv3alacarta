@@ -2,8 +2,8 @@
 # URL RTMP http://www.tv3.cat/pvideo/FLV_bbd_media.jsp?PROFILE=EVP&ID=4705751&QUALITY=H&FORMAT=MP4
 #    el QUALITY y el FORMAT salen del URL INFO
 
-
-REMOTE_DBG = False 
+'''
+REMOTE_DBG = True 
 if REMOTE_DBG:
     try:
         import pysrc.pydevd as pydevd
@@ -11,7 +11,7 @@ if REMOTE_DBG:
     except ImportError:
         sys.stderr.write("Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
         sys.exit(1)
-        
+'''        
 
 import xbmc
 import xbmcgui
