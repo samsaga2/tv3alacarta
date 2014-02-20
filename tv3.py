@@ -77,6 +77,12 @@ def get_mesvotats():
     xmldoc = tv3xml.fetch_mesvotats()
     list = map(build_episode_item, xmldoc.find('resultats'))
     return list
+
+
+def get_mesvistos():
+    xmldoc = tv3xml.fetch_mesvistos()
+    list = map(build_episode_item, xmldoc.find('resultats'))
+    return list
          
 
 def get_letter(letter):

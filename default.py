@@ -75,7 +75,7 @@ def show_mainmenu():
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
 
     url = build_url({'mode': 'mesvistes'})
-    li = xbmcgui.ListItem('Mes vistes', iconImage='DefaultFolder.png')
+    li = xbmcgui.ListItem('Mes vistos', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
 
     url = build_url({'mode': 'mesvotats'})
@@ -92,6 +92,11 @@ def show_mesdestacats():
 
 def show_mesvotats():
     shows = tv3.get_mesvotats()
+    build_episodes_menu(shows, True)
+
+
+def show_mesvistos():
+    shows = tv3.get_mesvistos()
     build_episodes_menu(shows, True)
     
 
@@ -121,7 +126,7 @@ if mode is None:
 elif mode[0] == 'mesdestacats':
     show_mesdestacats()
 elif mode[0] == 'mesvistes':
-    pass
+    show_mesvistos()
 elif mode[0] == 'mesvotats':
     show_mesvotats()
 elif mode[0] == 'programes':
