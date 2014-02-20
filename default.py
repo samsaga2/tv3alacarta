@@ -88,8 +88,12 @@ def show_mainmenu():
     
     
 def show_directe():
-    url = build_url({'mode': 'arafem', 'canal': 'TV3CAT'})
+    url = build_url({'mode': 'arafem', 'canal': 'TV3'})
     li = xbmcgui.ListItem('TV3', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+    
+    url = build_url({'mode': 'arafem', 'canal': 'TV3CAT'})
+    li = xbmcgui.ListItem('TV3 CAT', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
     
     url = build_url({'mode': 'arafem', 'canal': '33'})
@@ -98,6 +102,10 @@ def show_directe():
 
     url = build_url({'mode': 'arafem', 'canal': '324'})
     li = xbmcgui.ListItem('3/24', iconImage='DefaultFolder.png')
+    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
+
+    url = build_url({'mode': 'arafem', 'canal': 'SUPER3'})
+    li = xbmcgui.ListItem('Super 3', iconImage='DefaultFolder.png')
     xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
 
     url = build_url({'mode': 'arafem', 'canal': 'cameres'})
