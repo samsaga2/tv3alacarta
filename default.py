@@ -43,7 +43,8 @@ def build_letters_menu(letters):
 def build_shows_menu(shows):
     for show in shows:
         url = build_url({'mode': 'episodes', 'code': show.code})
-        li = xbmcgui.ListItem(show.title, iconImage=show.img)
+        iconImage = show.img if len(show.img) > 0 else 'DefaultVideo.png'
+        li = xbmcgui.ListItem(show.title, iconImage=iconImage)
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True) 
     xbmcplugin.endOfDirectory(addon_handle)
     
