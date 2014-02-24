@@ -63,88 +63,69 @@ def build_episodes_menu(episodes, include_subtitle=False):
     xbmcplugin.endOfDirectory(addon_handle)
 
 
-def show_mainmenu():
-    url = build_url({'mode': 'programes'})
-    li = xbmcgui.ListItem('Programes', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'directe'})
-    li = xbmcgui.ListItem('Directe', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'mesdestacats'})
-    li = xbmcgui.ListItem('Mes destacats', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'mesvistes'})
-    li = xbmcgui.ListItem('Mes vistos', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'mesvotats'})
-    li = xbmcgui.ListItem('Mes votats', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-     
+def menu_mainmenu():
+    items = [{'title': 'Programes', 'mode':'programes'},
+             {'title': 'Directe', 'mode':'directe'},
+             {'title': 'Mes destacats', 'mode':'mesdestacats'},
+             {'title': 'Mes vistos', 'mode':'mesvistes'},
+             {'title': 'Mes votats', 'mode':'mesvotats'},
+             ]    
+    for item in items:
+        url = build_url({'mode': item['mode']})
+        li = xbmcgui.ListItem(item['title'], iconImage='DefaultFolder.png')
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
     xbmcplugin.endOfDirectory(addon_handle)
     
     
-def show_directe():
-    url = build_url({'mode': 'arafem', 'canal': 'TV3'})
-    li = xbmcgui.ListItem('TV3', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-    
-    url = build_url({'mode': 'arafem', 'canal': 'TV3CAT'})
-    li = xbmcgui.ListItem('TV3 CAT', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-    
-    url = build_url({'mode': 'arafem', 'canal': '33'})
-    li = xbmcgui.ListItem('C33', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'arafem', 'canal': '324'})
-    li = xbmcgui.ListItem('3/24', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'arafem', 'canal': 'SUPER3'})
-    li = xbmcgui.ListItem('Super 3', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-
-    url = build_url({'mode': 'arafem', 'canal': 'cameres'})
-    li = xbmcgui.ListItem('Cameres TV3', iconImage='DefaultFolder.png')
-    xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
-     
+def menu_directe():
+    items = [{'title': 'TV3', 'canal':'TV3'},
+             {'title': 'TV3 CAT', 'canal':'TV3CAT'},
+             {'title': 'C33', 'canal':'33'},
+             {'title': '3/24', 'canal':'324'},
+             {'title': 'Super 3', 'canal':'SUPER3'},
+             {'title': 'Cameres TV3', 'canal':'cameres'}
+             ]
+    for item in items:
+        url = build_url({'mode': 'arafem', 'canal': item['canal']})
+        li = xbmcgui.ListItem(item['title'], iconImage='DefaultFolder.png')
+        xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li, isFolder=True)
     xbmcplugin.endOfDirectory(addon_handle)
     
     
-    
-def show_mesdestacats():
+def menu_mesdestacats():
     shows = tv3.get_mesdestacats()
     build_episodes_menu(shows, True)
 
 
-def show_mesvotats():
+def menu_mesvotats():
     shows = tv3.get_mesvotats()
     build_episodes_menu(shows, True)
 
 
-def show_mesvistos():
+def menu_mesvistos():
     shows = tv3.get_mesvistos()
     build_episodes_menu(shows, True)
     
 
-def show_letters():
+def menu_programes():
     build_letters_menu(tv3.letters)
 
 
-def show_letter(letter):
+def menu_letter(letter):
     shows = tv3.get_letter(letter)
     build_shows_menu(shows)
     
     
-def show_episodes(code):
+def menu_episodes(code):
     episodes = tv3.get_episodes(code)
     build_episodes_menu(episodes)
     
     
+def menu__arafem(canal):
+    rtmp = tv3.get_canal_stream(canal)
+    xbmc.Player().play(rtmp)
+    
+
 def play(code):
     videos = tv3.get_media(code)
     video = videos[0]
@@ -152,31 +133,27 @@ def play(code):
     xbmc.Player().play(rtmp)
     
 
-def show_arafem(canal):
-    rtmp = tv3.get_canal_stream(canal)
-    xbmc.Player().play(rtmp)
-
 if mode is None:
-    show_mainmenu()
+    menu_mainmenu()
 elif mode[0] == 'directe':
-    show_directe()
+    menu_directe()
 elif mode[0] == 'arafem':
     canal = args['canal'][0]
-    show_arafem(canal)
+    menu_arafem(canal)
 elif mode[0] == 'mesdestacats':
-    show_mesdestacats()
+    menu_mesdestacats()
 elif mode[0] == 'mesvistes':
-    show_mesvistos()
+    menu_mesvistos()
 elif mode[0] == 'mesvotats':
-    show_mesvotats()
+    menu_mesvotats()
 elif mode[0] == 'programes':
-    show_letters()
+    menu_programes()
 elif mode[0] == 'letter':
     letter = args['letter'][0]
-    show_letter(letter)
+    menu_letter(letter)
 elif mode[0] == 'episodes':
     code = args['code'][0]
-    show_episodes(code)
+    menu_episodes(code)
 elif mode[0] == 'play':
     code = args['code'][0]
     play(code)
