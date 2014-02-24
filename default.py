@@ -27,8 +27,6 @@ args = urlparse.parse_qs(sys.argv[2][1:])
  
 xbmcplugin.setContent(addon_handle, 'movies')
 
-mode = args.get('mode', None)
-
 
 def build_url(query):
     return base_url + '?' + urllib.urlencode(query)
@@ -133,27 +131,32 @@ def play(code):
     xbmc.Player().play(rtmp)
     
 
-if mode is None:
-    menu_mainmenu()
-elif mode[0] == 'directe':
-    menu_directe()
-elif mode[0] == 'arafem':
-    canal = args['canal'][0]
-    menu_arafem(canal)
-elif mode[0] == 'mesdestacats':
-    menu_mesdestacats()
-elif mode[0] == 'mesvistes':
-    menu_mesvistos()
-elif mode[0] == 'mesvotats':
-    menu_mesvotats()
-elif mode[0] == 'programes':
-    menu_programes()
-elif mode[0] == 'letter':
-    letter = args['letter'][0]
-    menu_letter(letter)
-elif mode[0] == 'episodes':
-    code = args['code'][0]
-    menu_episodes(code)
-elif mode[0] == 'play':
-    code = args['code'][0]
-    play(code)
+def menu(mode):
+    if mode is None:
+        menu_mainmenu()
+    elif mode[0] == 'directe':
+        menu_directe()
+    elif mode[0] == 'arafem':
+        canal = args['canal'][0]
+        menu_arafem(canal)
+    elif mode[0] == 'mesdestacats':
+        menu_mesdestacats()
+    elif mode[0] == 'mesvistes':
+        menu_mesvistos()
+    elif mode[0] == 'mesvotats':
+        menu_mesvotats()
+    elif mode[0] == 'programes':
+        menu_programes()
+    elif mode[0] == 'letter':
+        letter = args['letter'][0]
+        menu_letter(letter)
+    elif mode[0] == 'episodes':
+        code = args['code'][0]
+        menu_episodes(code)
+    elif mode[0] == 'play':
+        code = args['code'][0]
+        play(code)
+
+
+mode = args.get('mode', None)
+menu(mode)
