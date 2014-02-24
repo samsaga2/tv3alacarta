@@ -4,6 +4,8 @@ import tv3xml
 
 
 letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+page_url = 'http://zonatv.net/cadenas-autonomicas/tv-3-cat.php'
+swf_url = 'http://zonatv.net/cadenas-autonomicas/media/canales/tv-3-cat-2654656.swf'
 
 
 class Show:
@@ -102,10 +104,6 @@ def get_media(code):
     title = xmldoc.find('title').text
     videos = map(build_media_item, xmldoc.find('videos').findall('video'))
     return videos
-
-
-page_url = 'http://zonatv.net/cadenas-autonomicas/tv-3-cat.php'
-swf_url = 'http://zonatv.net/cadenas-autonomicas/media/canales/tv-3-cat-2654656.swf'
 
 
 def format_rmtp_url(rtmpurl):

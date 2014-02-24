@@ -7,6 +7,7 @@ import urllib
 
 letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
+
 def fetch_xml(url):
     xmlsrc = webutil.fetch_page(url)
     xmldoc = ET.fromstring(xmlsrc)
