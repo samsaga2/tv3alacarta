@@ -1,5 +1,6 @@
 import urllib2
 import re
+import xml.etree.ElementTree as ET
 
 def fetch_page(url):
     headers = {
@@ -12,3 +13,9 @@ def fetch_page(url):
     }
     request = urllib2.Request(url, headers=headers)
     return urllib2.urlopen(request).read()
+
+
+def fetch_xml(url):
+    xmlsrc = fetch_page(url)
+    xmldoc = ET.fromstring(xmlsrc)
+    return xmldoc

@@ -11,11 +11,12 @@ if REMOTE_DBG:
     except ImportError:
         sys.stderr.write("Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
         sys.exit(1)
-'''        
+'''
 
 import urlparse
 import xbmcplugin
 from tv3channel import TV3Channel
+from a3mediachannel import A3MediaChannel
 
 base_url = sys.argv[0]
 addon_handle = int(sys.argv[1])
@@ -23,5 +24,6 @@ args = urlparse.parse_qs(sys.argv[2][1:])
 
 xbmcplugin.setContent(addon_handle, 'movies')
 
-channel = TV3Channel(base_url, addon_handle, args)
+#channel = TV3Channel(base_url, addon_handle, args)
+channel = A3MediaChannel(base_url, addon_handle, args)
 channel.call()
