@@ -18,6 +18,7 @@ class TV3Channel(Channel):
         menu.show()
         
     def build_shows_menu(self, shows):         
+        menu = Menu(self.base_url, self.addon_handle)
         for show in shows:
             iconImage = show.img if len(show.img) > 0 else 'DefaultVideo.png'
             li = MenuItem(show.title, 'episodes', args={'code': show.code}, iconImage=iconImage)
