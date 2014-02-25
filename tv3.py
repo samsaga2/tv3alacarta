@@ -105,6 +105,13 @@ def get_letter(letter):
     return list
 
 
+def get_search(text):
+    url = 'http://www.tv3.cat/searcher/tvc/p3acSearchVideos.jsp?textBusca={0}&page=1&pageItems=10&device=web'.format(text)
+    xmldoc = fetch_xml(url)
+    list = map(build_episode_item, xmldoc.find('resultats'))
+    return list
+
+
 def get_episodes(code):
     url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=videosprog&id={0}&page=1&pageItems=1000&device=web'.format(code)
     xmldoc = fetch_xml(url)
