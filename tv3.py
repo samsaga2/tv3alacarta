@@ -1,6 +1,8 @@
 import webutil
+import xml.etree.ElementTree as ET
+import urlparse
+import urllib
 import re
-import tv3xml
 
 
 letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
@@ -30,8 +32,14 @@ class Media:
         self.format = format
         self.quality_label = quality_label
         self.quality_code = quality_code
-        
-        
+                
+
+def fetch_xml(url):
+    xmlsrc = webutil.fetch_page(url)
+    xmldoc = ET.fromstring(xmlsrc)
+    return xmldoc
+
+
 def build_show_item(item):
     title = item.find('titol').text.encode('ISO-8859-1')
     code = item.find('idint_rss').text
@@ -43,23 +51,23 @@ def build_show_item(item):
 
 
 def build_episode_item(item):
-        code = item.attrib['idint']
-        title = item.find('titol').text.encode('ISO-8859-1')
-        subtitle = item.find('subtitol').text.encode('ISO-8859-1')
-        try:
-            img = item.find('imatges').findall('img')[0].text
-        except:
-            img = ''
-        
-        entradeta = item.find('entradeta').text
-        if entradeta == None:
-            entradeta = ''
-        else:
-            entradeta = entradeta.encode('ISO-8859-1')
-        data = item.find('data').text 
-        durada = item.find('durada_h').text
-        plot = 'Data: {0}\nDurada: {1}\n{2}'.format(data, durada, entradeta)
-        return Episode(title, subtitle, code, img, plot, data)
+    code = item.attrib['idint']
+    title = item.find('titol').text.encode('ISO-8859-1')
+    subtitle = item.find('subtitol').text.encode('ISO-8859-1')
+    try:
+        img = item.find('imatges').findall('img')[0].text
+    except:
+        img = ''
+    
+    entradeta = item.find('entradeta').text
+    if entradeta == None:
+        entradeta = ''
+    else:
+        entradeta = entradeta.encode('ISO-8859-1')
+    data = item.find('data').text 
+    durada = item.find('durada_h').text
+    plot = 'Data: {0}\nDurada: {1}\n{2}'.format(data, durada, entradeta)
+    return Episode(title, subtitle, code, img, plot, data)
     
 
 def build_media_item(video):
@@ -70,45 +78,49 @@ def build_media_item(video):
     
     
 def get_mesdestacats():
-    xmldoc = tv3xml.fetch_mesdestacats()
+    url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=destacats&page=1&pageItems=100&device=web'
+    xmldoc = fetch_xml(url)    
     list = map(build_episode_item, xmldoc.find('resultats'))
     return list
 
 
 def get_mesvotats():
-    xmldoc = tv3xml.fetch_mesvotats()
+    url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=mesvotats&page=1&pageItems=100&device=web'
+    xmldoc = fetch_xml(url)
     list = map(build_episode_item, xmldoc.find('resultats'))
     return list
 
 
 def get_mesvistos():
-    xmldoc = tv3xml.fetch_mesvistos()
+    url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=mesvistos&page=1&pageItems=10&device=web'
+    xmldoc = fetch_xml(url)
     list = map(build_episode_item, xmldoc.find('resultats'))
     return list
          
 
 def get_letter(letter):
-    xmldoc = tv3xml.fetch_xmlletter(letter)
+    url = 'http://www.tv3.cat/p3ac/llistatProgramesLletra.jsp?lletra={0}&page=1&pageItems=1000'.format(letter)
+    xmldoc = fetch_xml(url)
     list = map(build_show_item, xmldoc.find('resultats'))
     return list
 
 
 def get_episodes(code):
-    xmldoc = tv3xml.fetch_xmlepisodes(code)
+    url = 'http://www.tv3.cat/p3ac/p3acLlistatVideos.jsp?type=videosprog&id={0}&page=1&pageItems=1000&device=web'.format(code)
+    xmldoc = fetch_xml(url)
     list = map(build_episode_item, xmldoc.find('resultats')) 
     return list
 
 
 def get_media(code):
-    xmldoc = tv3xml.fetch_xmlinfo(code)
+    url = 'http://www.tv3.cat/pvideo/FLV_bbd_dadesItem.jsp?idint={0}'.format(code)
+    xmldoc = fetch_xml(url)
     title = xmldoc.find('title').text
     videos = map(build_media_item, xmldoc.find('videos').findall('video'))
     return videos
 
 
 def format_rmtp_url(rtmpurl):
-    # from 'rtmp://mp4-500-strfs.fplive.net/mp4-500-str/mp4:g/tvcatalunya/0/0/1381401675900.mp4'
-    # to 'rtmp://mp4-500-strfs.fplive.net playpath=mp4:g/tvcatalunya/0/0/1381401675900.mp4 app=mp4-500-str'
     matches = re.findall("rtmp\://(.*?)/(.*?)/(.*?)$", rtmpurl, flags=re.DOTALL)
     rtmp_host = matches[0][0]
     rtmp_app = matches[0][1]
@@ -117,8 +129,6 @@ def format_rmtp_url(rtmpurl):
 
 
 def format_rmtpdirecte_url(rtmpurl):
-    # from 'rtmp://tv-nogeo-flashlivefs.fplive.net/tv-nogeo-flashlive-live/stream_TV3CAT_FLV'
-    # to 'rtmp://tv-nogeo-flashlivefs.fplive.net/tv-nogeo-flashlive-live playpath=stream_TV3CAT_FLV swfUrl=http://zonatv.net/cadenas-autonomicas/media/canales/tv-3-cat-2654656.swf live=1 pageUrl=http://zonatv.net/cadenas-autonomicas/tv-3-cat.php'
     matches = re.findall("rtmp\://(.*?)/(.*?)/(.*?)$", rtmpurl, flags=re.DOTALL)
     rtmp_host = matches[0][0]
     rtmp_app = matches[0][1]
@@ -127,13 +137,15 @@ def format_rmtpdirecte_url(rtmpurl):
 
 
 def get_show_rtmp(code, quality_code, format):
-    xmldoc = tv3xml.fetch_xmlmedia(code, quality_code, format)
+    url = 'http://www.tv3.cat/pvideo/FLV_bbd_media.jsp?PROFILE=EVP&ID={0}&QUALITY={1}&FORMAT={2}'.format(code, quality_code, format)
+    xmldoc = fetch_xml(url)
     media = xmldoc.find('item').find('media').text
     return format_rmtp_url(media)
 
 
 def get_canal_stream(canal):
-    xmldoc = tv3xml.fetch_xml_canal(canal)
+    url = 'http://www.tv3.cat/3ac/xml_dinamic/arafem/canal_{0}.xml'.format(canal)
+    xmldoc = fetch_xml(url)
     default_quality = xmldoc.find('qualitat_defecte').text
     for stream in xmldoc.find('streams'):        
         qualitat = stream.attrib['qualitat']
