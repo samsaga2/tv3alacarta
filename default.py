@@ -24,4 +24,4 @@ args = urlparse.parse_qs(sys.argv[2][1:])
 xbmcplugin.setContent(addon_handle, 'movies')
 
 channel = TV3Channel(base_url, addon_handle, args)
-channel.call()
+channel.mainmenu()

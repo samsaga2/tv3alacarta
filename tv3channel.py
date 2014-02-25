@@ -25,7 +25,7 @@ class TV3Channel(Channel):
             menu.add(li)
         menu.show() 
     
-    def mode__mainmenu(self):
+    def mainmenu(self):
         menu = Menu(self.base_url, self.addon_handle)
         menu.add(MenuItem('Programes', 'programes', iconImage='DefaultFolder.png'))
         menu.add(MenuItem('Directe', 'directe', iconImage='DefaultFolder.png'))

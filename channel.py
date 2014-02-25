@@ -4,12 +4,15 @@ class Channel:
         self.addon_handle = addon_handle
         self.args = args
         
+    def mainmenu(self):
+         pass
+        
     def call(self):
         mode = self.args.get('mode', None)
         mode = mode[0] if mode else None
         
         if mode is None:
-            self.mode__mainmenu()
+            self.mainmenu()
         else:
             func_name = 'mode__' + mode
             func = getattr(self, func_name)
